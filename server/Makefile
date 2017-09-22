@@ -1,7 +1,7 @@
 TARGET=app
-GCC=gcc -I./include
+GCC=g++ -I./include -std=c++11
 .PHONY: clean
-OBJECT=main.o 
+OBJECT=main.o testwork.o net_epoll.o
 %.o:%.cpp
 	$(GCC) -c $<
 

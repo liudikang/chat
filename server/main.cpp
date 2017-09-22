@@ -1,7 +1,7 @@
-#include <sys_head.h>
-
+#include	<sys_head.h>
+#include	<inet.h>
+#include	<net_epoll.h>
 int log_fd ;
-int sock_fd ;
 int getDate(char * _buf)
 {
 	time_t now;
@@ -51,65 +51,9 @@ void writelog(const char * format, ...) //写日志
 	write(log_fd, _buf, offset + msglen + 1);
 }
 
-void addfd(int epoll_fd, int new_fd)  //默认边缘触发
-{
-	struct epoll_event event;
-	event.events = EPOLLIN | EPOLLET;
-	event.data.fd = new_fd;
-	int mask = fcntl( new_fd, F_GETFL);
-	fcntl( new_fd, F_SETFL, mask | O_NONBLOCK);
-	epoll_ctl(epoll_fd, EPOLL_CTL_ADD, new_fd, &event);
-}
 
-void doepoll(int epoll_fd)
-{
-	struct epoll_event event[MAX_EVENT];
-	char readbuf[BUF_SIZE];
-	for(;;)
-	{
-		int ret = epoll_wait( epoll_fd, event, MAX_EVENT, -1);
-		if (ret < 0)
-		{
-			writelog("%s :%s ", "epoll_wait error", strerror(errno));
-			break;
-		}else
-		{
-			for (int i = 0; i < ret; i++)
-			{
 
-				int fd = event[i].data.fd;
-				if ( fd == sock_fd)
-				{
-					int new_fd = accept(fd, NULL, NULL);
-				//	writelog("new connct");
-					addfd(epoll_fd, new_fd);
-				}else if(event[i].events & EPOLLIN)
-				{
-					while(1)
-					{
-						int len = read(fd, readbuf, BUF_SIZE);// 对读到的数据不做任何处理
-						if (len < 0)
-						{
-							if ( errno == EAGAIN)
-								break;
-							close(fd);
-							break;
-						}else if (len == 0)
-						{
-							close(fd);
-							break;
-						}else if ( strncmp("quit", readbuf, 4) == 0)
-						{
-							close(fd);
-							break;
-						}
-					}
-				}
 
-			}
-		}
-	}
-}
 
 int main(int argc, char * argv[])
 {
@@ -122,24 +66,9 @@ int main(int argc, char * argv[])
 	if (log_fd < 0)
 		perror("log open error");
 
-	sock_fd = socket(AF_INET, SOCK_STREAM, 0);		
-	if (sock_fd < 0)
-		perror("socket error");
-	struct sockaddr_in addr;
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons( SERVER_PORT);
-	addr.sin_addr.s_addr = INADDR_ANY;
-	if (bind(sock_fd, (const struct sockaddr*) &addr, sizeof(addr)) < 0)
-		perror("bind error");
-	if ( listen(sock_fd, 4) < 0)
-		perror("listen error");	
-	int epoll_fd = epoll_create(1);
-	addfd(epoll_fd, sock_fd);
-	//初始创建工作完成
-
-	doepoll(epoll_fd);	
-
-	close(sock_fd);
+	inet * network = new net_epoll;
+	network->initNetwork();
+	network->dowork();
 	close(log_fd);
 	return 0;
 }

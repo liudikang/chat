@@ -1,28 +1,12 @@
-#include <stdarg.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <time.h>
-#include <fcntl.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/epoll.h>
-const int BUF_SIZE = 1024;
-const int MAX_EVENT = 1024;
-const int SERVER_PORT = 60000;
+#include <sys_head.h>
+
 int log_fd ;
 int sock_fd ;
-char _buf[1024];
-int getDate()
+int getDate(char * _buf)
 {
 	time_t now;
 	struct tm* s_now;
-	char * week[] = {"天", "一", "二", "三", "四", "五", "六" };
+	const char * week[] = {"天", "一", "二", "三", "四", "五", "六" };
 	time(&now);
 	s_now = localtime(&now);	
 	return sprintf( _buf, "%04d年%02d月%02d日 星期%s %02d:%02d:%02d  ", 1900 + s_now->tm_year, s_now->tm_mon + 1, s_now->tm_mday, week[s_now->tm_wday],s_now->tm_hour, s_now->tm_min, s_now->tm_sec);
@@ -55,11 +39,12 @@ int toDeamon()
     }
 }
 
-void writelog(char * format, ...) //写日志
+void writelog(const char * format, ...) //写日志
 {
 	va_list argv;
 	va_start(argv, format);	
-	int offset = getDate();
+	char _buf[BUF_SIZE];
+	int offset = getDate(_buf);
 	int msglen = vsnprintf(_buf + offset, BUF_SIZE - offset - 1,format, argv);
 	_buf[offset + msglen] = '\n';
 	_buf[offset + msglen + 1] = 0;
@@ -151,8 +136,6 @@ int main(int argc, char * argv[])
 	int epoll_fd = epoll_create(1);
 	addfd(epoll_fd, sock_fd);
 	//初始创建工作完成
-
-
 
 	doepoll(epoll_fd);	
 

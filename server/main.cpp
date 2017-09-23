@@ -1,6 +1,5 @@
 #include	<sys_head.h>
-#include	<inet.h>
-#include	<net_epoll.h>
+#include	<control.h>
 int log_fd ;
 int getDate(char * _buf)
 {
@@ -65,10 +64,11 @@ int main(int argc, char * argv[])
 	log_fd = open("/tmp/chaterror.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (log_fd < 0)
 		perror("log open error");
+	
+	Control control;
+	control.init();
 
-	inet * network = new net_epoll;
-	network->initNetwork();
-	network->dowork();
+	control.run();
 	close(log_fd);
 	return 0;
 }

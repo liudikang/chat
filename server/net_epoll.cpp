@@ -33,7 +33,6 @@ void net_epoll::dowork()
 {
 	struct epoll_event event[MAX_EVENT];
 	char readbuf[BUF_SIZE];
-	printf("test\n");
 	for(;;)
 	{
 		int ret = epoll_wait( this->epoll_fd, event, MAX_EVENT, -1);
@@ -102,7 +101,7 @@ void net_epoll::dowork()
 					//提交数据
 					if ( !wrong)
 					{
-						this->control->dealData( 0 , NULL, 0);
+						this->control->dealData( 0 , readbuf, rlen);
 					}
 					//readbuf[rlen] = 0;
 					//pk_register *reg = reinterpret_cast<pk_register *> (readbuf);

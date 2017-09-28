@@ -14,7 +14,8 @@ struct package
 typedef int32_t len_t;
 struct pk_register :public package
 {
-	char username[128];
+	char uid[32]
+	char username[64];
 	char password[128];
 	pk_register(){
 		type = register_t;

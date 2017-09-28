@@ -21,11 +21,21 @@ int Control::init()
 }
 void Control::run()
 {
+	// 
+	printf("network  start running\n");
 	network->dowork();
 }
 
+
 void Control::uninstall()
 {
-
+	if (work != NULL)
+	{
+		delete work;
+	}
+	if (network != NULL)
+	{
+		delete network;
+	}
 }
 

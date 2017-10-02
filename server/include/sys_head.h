@@ -1,7 +1,8 @@
 #ifndef _SYS_HEAD_H_
 #define _SYS_HEAD_H_
 
-
+#include <atomic>
+#include <iostream>
 #include <stdarg.h>
 #include <unistd.h>
 #include <string.h>
@@ -10,12 +11,15 @@
 #include <errno.h>
 #include <time.h>
 #include <fcntl.h>
+#include <pthread.h>
+#include <semaphore.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
+#include <vector>
 
 
 

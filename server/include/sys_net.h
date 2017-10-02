@@ -3,7 +3,7 @@
 #include 	<sys/types.h>
 
 namespace mynet{
-enum pk_type{ register_t, login_t, msg_t, logout_t, life_t};  //消息类型
+enum pk_type{ t_reg, t_login, t_msg, t_logout, t_life};  //消息类型
 
 
 struct package 
@@ -14,11 +14,11 @@ struct package
 typedef int32_t len_t;
 struct pk_register :public package
 {
-	char uid[32]
+	char uid[32];
 	char username[64];
 	char password[128];
 	pk_register(){
-		type = register_t;
+		type = t_reg;
 		username[0] = 0;
 		password[0] = 0;
 	}
@@ -30,7 +30,7 @@ struct pk_login :public package
 	char username[128];
 	char password[128];
 	pk_login(){
-		type = register_t;
+		type = t_login;
 		username[0] = 0;
 		password[0] = 0;
 	}
@@ -42,7 +42,7 @@ struct pk_msg : public package
 {
 	int32_t msgtype;
 	pk_msg(){
-		type = register_t;
+		type = t_msg;
 		msgtype = -1;
 	}
 };

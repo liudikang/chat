@@ -4,6 +4,7 @@
 #include	<sys_net.h>
 #include 	<inet.h>
 #include 	<iwork.h>
+#include	<model.h>
 using namespace mynet;
 class Control
 {
@@ -13,9 +14,13 @@ public:
 	int init();
 	void run();
 	void uninstall();
+	
+	void adduser(const char *uid, const char *user, const char *password);
+
 private:
 	inet *network; //
 	iwork *work;
+	model *database;
 };
 
 #endif

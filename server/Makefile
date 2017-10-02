@@ -1,13 +1,13 @@
 TARGET=app
-GCC=g++ -I./include -pthread -std=c++11
+GCC=g++  -g -I./include -pthread  --std=gnu++11
 MYSQL=  `mysql_config --cflags --libs`
 .PHONY: clean
-OBJECT=main.o testwork.o net_epoll.o control.o 
+OBJECT=main.o testwork.o net_epoll.o control.o  model_mysql.o
 %.o:%.cpp
-	$(GCC) -c $<
+	$(GCC) -c $<  ${MYSQL}
 
 $(TARGET):${OBJECT}
-	$(GCC) $^ -o $@ 
+	$(GCC) $^ -o $@ ${MYSQL} 
 
 sqlcon: model_mysql.cpp testmysql.cpp
 	${GCC} $^ -o $@ ${MYSQL}

@@ -4,6 +4,7 @@
 class model_mysql:public model
 {
 public:
+	model_mysql(){}
 	virtual	int init() override;		
 	virtual int execSql(const char *sql) override;
 	virtual void uninstall() override;	

@@ -1,9 +1,11 @@
 #ifndef _IWORK_H_
 #define _IWORK_H_
+
+class Control;
 class itask
 {
 public:
-	virtual void run() = 0;
+	virtual void run(Control *) = 0;
 };
 
 class iwork

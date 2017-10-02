@@ -25,7 +25,7 @@ int model_mysql::init()
 	}
 	autoRecon = 0;
 	mysql_options(&con, MYSQL_OPT_RECONNECT, &autoRecon); //如果丢失连接   自动重连
-	this->adduser("liu", "username", "pwd");
+//	this->adduser("liu", "username", "pwd");
 }
 
 int model_mysql::execSql(const char *sql) 
